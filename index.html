@@ -26,14 +26,16 @@
             <label for="toggle-all"></label>
             <ul class="todo-list">
                 <li v-for="todo in filteredTodos" class="todo" :key="todo.id"
-                    :class="{ completed: todo.completed, editing: todo == editedTodo }">
+                    :class="{ completed: todo.completed, editing: todo.title == editedTodo }">
                     <div class="view">
                         <input class="toggle" type="checkbox" v-model="todo.completed" />
                         <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
                         <button class="destroy" @click="removeTodo(todo)"></button>
                     </div>
-                    <input class="edit" type="text" v-model="todo.title" v-todo-focus="todo == editedTodo"
-                        @blur="doneEdit(todo)" @keyup.enter="doneEdit(todo)" @keyup.esc="cancelEdit(todo)" />
+                    <input 
+                        class="edit" 
+                        type="text" v-model="todo.title" @keyup.enter="doneEdit(todo)" @keyup.esc="cancelEdit(todo)"
+                    >
                 </li>
             </ul>
         </section>
@@ -94,6 +96,7 @@
             data: {
                 todos: todoStorage.fetch(),
                 editedTodo: null,
+                editing: false,
                 newTodo: '',
                 status: 'all'
             },
@@ -145,9 +148,8 @@
                     this.newTodo = ""
                 },
                 editTodo: function (todo) {
-                    console.log('editttttttttt');
                     this.beforeEditCache = todo.title;
-                    todoStorage.save(this.todos)
+                    this.editedTodo = todo.title;
                 },
                 doneEdit: function (todo) {
                     if (!this.editedTodo) {
