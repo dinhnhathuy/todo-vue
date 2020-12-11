@@ -18,24 +18,59 @@
     <section id="todoapp">
         <header class="header">
             <h1>todos</h1>
-            <input class="new-todo" autofocus autocomplete="off" placeholder="What needs to be done?" v-model="newTodo"
-            @keyup.enter="addTodo" />
+            <div>
+                <input 
+                    class="new-todo" autofocus autocomplete="off" 
+                    placeholder="What needs to be done?" 
+                    v-model="newTodo"
+                    @keyup.enter="addTodo" />
+                <input 
+                    type="datetime-local" 
+                    id="default-time" 
+                    name="appt" 
+                    value="2020-01-01T19:30"
+                    min="2020-01-01T19:30" 
+                    max="2021-01-01T19:30" 
+                    v-model="todoTime"
+                    required>
+            </div>
+
         </header>
         <section id="main" v-show="todos.length" v-cloak>
-            <input id="toggle-all" class="toggle-all" type="checkbox" v-model="allDone" />
+            <input 
+                id="toggle-all" 
+                class="toggle-all" 
+                type="checkbox" 
+                v-model="allDone" />
             <label for="toggle-all"></label>
             <ul class="todo-list">
                 <li v-for="todo in filteredTodos" class="todo" :key="todo.id"
                     :class="{ completed: todo.completed, editing: todo.title == editedTodo }">
                     <div class="view">
-                        <input class="toggle" type="checkbox" v-model="todo.completed" />
-                        <label @dblclick="editTodo(todo)">{{ todo.title }}</label>
+                        <input 
+                            class="toggle" 
+                            type="checkbox" 
+                            v-model="todo.completed" />
+                        <label @dblclick="editTodo(todo)">{{ todo.title }}
+                            <input 
+                            type="datetime-local" 
+                            id="appt" 
+                            name="appt" 
+                            :value="todo.time"
+                            min="2020-01-01T19:30" 
+                            max="2021-01-01T19:30" 
+                            v-model="todo.time"
+                            required>
+                        </label>
                         <button class="destroy" @click="removeTodo(todo)"></button>
                     </div>
                     <input 
                         class="edit" 
-                        type="text" v-model="todo.title" @keyup.enter="doneEdit(todo)" @keyup.esc="cancelEdit(todo)"
-                    >
+                        type="text" 
+                        v-model="todo.title" 
+                        @keyup.enter="doneEdit(todo)"
+                        @keyup.esc="cancelEdit(todo)">
+                   
                 </li>
             </ul>
         </section>
@@ -46,7 +81,8 @@
                 <li><a href="#/active" :class="{selected: status == 'active'}">Active</a></li>
                 <li><a href="#/completed" :class="{selected: status == 'completed'}">completed</a></li>
                 <li>
-                    <button class="clear-complete" v-show="todos.length > remaining" @click="removeCompleted()">Clear complete</button>
+                    <button class="clear-complete" v-show="todos.length > remaining" @click="removeCompleted()">Clear
+                        complete</button>
                 </li>
             </ul>
         </footer>
@@ -58,6 +94,10 @@
     </footer>
 
     <script>
+        "use strict"
+        let today = new Date()
+        // 2021-01-01T19:30
+        var date = today.getFullYear() + '-' + today.getMonth() + '-' + today.getDate() + 'T' + today.getHours() + ":" + today.getMinutes()
         let STORAGE_KEY = 'todo-vue-2';
         var todoStorage = {
             fetch: function () {
@@ -98,6 +138,7 @@
                 editedTodo: null,
                 editing: false,
                 newTodo: '',
+                todoTime: date,
                 status: 'all'
             },
             watch: {
@@ -139,12 +180,16 @@
                     if (!value) {
                         return
                     }
-                    console.log(value);
+                    if(!this.todoTime || this.todoTime.length === 0){
+                        this.todoTime = date
+                    }
                     this.todos.push({
                         id: todoStorage.uid++,
                         title: value,
-                        completed: false
+                        completed: false,
+                        time: this.todoTime
                     })
+                    console.log(date);
                     this.newTodo = ""
                 },
                 editTodo: function (todo) {
@@ -188,6 +233,10 @@
 
         window.addEventListener("hashchange", onHashChange);
         onHashChange();
+
+        function dateToNumberic(date){
+            return new Date(date).getTime();
+        }
 
         app.$mount("#todoapp");
     </script>

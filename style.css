@@ -54,6 +54,20 @@ body {
 	            0 25px 50px 0 rgba(0, 0, 0, 0.1);
 }
 
+#default-time{
+	left: 250px;
+    top: -3rem;
+	position: relative;
+	font-family: inherit;
+    font-weight: inherit;
+    line-height: 1.4em;
+}
+
+#appt{
+	float: right;
+	margin-right: 3rem;
+}
+
 .todoapp input::-webkit-input-placeholder {
 	font-style: italic;
 	font-weight: 300;
@@ -109,6 +123,11 @@ body {
 	border: none;
 	background: rgba(0, 0, 0, 0.003);
 	box-shadow: inset 0 -2px 1px rgba(0,0,0,0.03);
+}
+
+#main{
+	margin-top: 20px;
+
 }
 
 .main {
